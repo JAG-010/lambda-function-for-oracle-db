@@ -1,4 +1,4 @@
-# lambda-function-for-oracle-db
+# AWS Lambda function for Oracle database
 > Lambda function to connect and query oracle RDS database
 
 This article will explain how to create a AWS Lambda function to connect to Oracle (RDS) database and query data. 
@@ -14,16 +14,15 @@ Since lambda is based on linux environment its recommended to create this functi
 
 👆 Download and keep it ready
 
-#### Step 1
-Check the python version installed, AWS Lambda supports Python version 3.6/3.7/3.8 at the time of this article written.
+### **Step 1:** Check the python version installed 
+AWS Lambda supports Python version 3.6/3.7/3.8 at the time of this article written.
 
 ```shell
 $ python --version
 Python 3.8.11
 ```
 
-Step 2
-Install pip
+### **Step 2:** Install pip
 
 ```shell
 $ sudo apt install python3-pip
@@ -32,8 +31,7 @@ $ pip3 --version
 pip 21.1.3 from /usr/local/lib/python3.8/site-packages/pip (python 3.8)
 ```
 
-Step 3
-Install Virtual Python Environment builder
+### **Step 3:** Install Virtual Python Environment builder
 
 ```shell
 $ pip3 install virtualenv
@@ -56,8 +54,8 @@ Successfully installed backports.entry-points-selectable-1.1.0 distlib-0.3.2 fil
 WARNING: Running pip as the 'root' user can result in broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv      
 / # 
 ```
-Step 4
-Create virtual environment `oralmdfn`
+
+### **Step 4:** Create virtual environment `oralmdfn`
 ```shell
 $ virtualenv oralmdfn
 created virtual environment CPython3.8.11.final.0-64 in 688ms
@@ -66,16 +64,16 @@ created virtual environment CPython3.8.11.final.0-64 in 688ms
     added seed packages: pip==21.1.3, setuptools==57.1.0, wheel==0.36.2
   activators BashActivator,CShellActivator,FishActivator,PowerShellActivator,PythonActivator,XonshActivator
 ```
-Step 5
-Activate virtual environment
+
+### **Step 5:** Activate virtual environment
 ```sh
 $ source oralmdfn/bin/activate
 (oralmdfn) $ 
 
 # you will see the virtual environment name in () if activated 
 ```
-Step 6
-Install cx_Oracle module vai pip
+
+### **Step 6:** Install cx_Oracle module vai pip
 Make sure you have downloaded the right version of cx_Oracle module. In this artical I use python 3.8 so i have downloaded `cx_Oracle-8.2.1-cp38-cp38-manylinux1_x86_64.whl` (👈cp38 is for python 3.8)
 
 ```shell
@@ -93,10 +91,9 @@ oralmdfn/lib/python3.8/site-packages/cx_Oracle.cpython-38-x86_64-linux-gnu.so
 oralmdfn/lib/python3.8/site-packages/cx_Oracle-8.2.1.dist-info
 ```
 
-Step 7
-Extract libiao rpm
+### **Step 7:** Extract libiao rpm
 
-install rpm2cpio package on linux
+Install rpm2cpio package on linux
 ```shell
 $ apt-get install rpm2cpio
 
@@ -122,8 +119,7 @@ $ rm $PWD/usr/lib64/libaio.so.1   ## to remove the soft link
 $ cp $PWD/usr/lib64/libaio.so.1.0.1 $PWD/usr/lib64/libaio.so.1
 ```
 
-Step 8
-Create lambda function zip file
+### **Step 8:** Create lambda function zip file
 
 create a new directory 
 ```shell
@@ -148,8 +144,7 @@ cx_Oracle-8.2.1.dist-info                 libclntsh.so.18.1      libocci.so     
 cx_Oracle.cpython-38-x86_64-linux-gnu.so  libclntshcore.so.18.1  libocci.so.18.1  network           xstreams.jar
 ```
 
-Step 9
-Archive the `ora_lmd_fn_py38` folder with zip
+### **Step 9:** Archive the `ora_lmd_fn_py38` folder with zip
 
 ```shell
 $ cd ora_lmd_fn_py38/
@@ -160,21 +155,21 @@ $ ls -lh *.zip
 
 Since our zip file is more than 10MB we need to upload to S3 bucket to add it to Lambda
 
-Step 10 
+### **Step 10:** 
 
 Following steps to be performed on AWS management console
 
-Step 10.1:
+**Step 10.1:**
 Create S3 bucket and upload `ora_lmd_fn_py38.zip` file to it
 
-Step 10.2:
+**Step 10.2:**
 Create a lambda function 
 ![Create Lambda function](images/create-fn.png)
 
 Edit Handler as `oralmdfn.lambda_handler` (our python file name is `oralmdfn` and handler name is `lambda_handler`)
 ![Edit handler](images/handler.png)
 
-Step 10.3: 
+**Step 10.3:** 
 Upload zip file from S3 to Lambda
 
 Get zip file URI
@@ -183,7 +178,7 @@ Get zip file URI
 Upload zip file to Lambda
 ![upload zip](images/upload-zip.png)
 
-Step 10.4:
+**Step 10.4:**
 Test the code
 
 On lambda page click Test button 
